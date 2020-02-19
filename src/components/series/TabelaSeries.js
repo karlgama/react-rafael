@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PubSub from 'pubsub-js'
 import './TabelaSeries.css'
 
 const ListaSeries = (props) => {
@@ -26,7 +27,7 @@ const ListaSeries = (props) => {
 								<button
 									className="btn btn-outline-danger btn-sm mr-2 p-1"
 									onClick={() => {
-										if (window.confirm('Confirma a exclusão?'))
+										if(window.confirm('Confirma a exclusão?'))
 											props.deleta(serie.id)
 									}}>
 									Delete
@@ -34,9 +35,9 @@ const ListaSeries = (props) => {
 								<button
 									className="btn btn-outline-warning btn-sm p-1"
 									onClick={() => {
-										props.consulta(serie)
-										console.log(serie)
-									}}>
+										PubSub.publish('editing',serie)
+									}}
+								>
 									Editar
 							</button>
 							</div>
@@ -52,7 +53,7 @@ class TabelaSeries extends Component {
 
 	render() {
 
-		const { series, deleta, consulta } = this.props
+		const { series, deleta } = this.props
 
 		return (
 			<div className='card'>
@@ -60,10 +61,7 @@ class TabelaSeries extends Component {
 					<h5 className="text-center">Lista de Series</h5>
 				</div>
 
-				<ListaSeries
-					series={series}
-					deleta={deleta}
-					consulta={consulta} />
+				<ListaSeries series={series} deleta={deleta} />
 			</div>
 		)
 	}

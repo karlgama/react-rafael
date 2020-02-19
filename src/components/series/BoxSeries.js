@@ -7,15 +7,8 @@ class BoxSeries extends Component {
 
   constructor() {
     super()
-    this.novaSerie = {
-      nome: '',
-      ano_lancamento: '',
-      temporadas: '',
-      sinopse: ''
-    }
     this.state = {
       series: [],
-      serie: this.novaSerie
     }
   }
 
@@ -25,9 +18,8 @@ class BoxSeries extends Component {
     this.setState({ series: series })
   }
 
-  enviaDados = async () => {
+  enviaDados = async (serie) => {
     console.log('enviando dados....')
-    let { serie } = this.state
     const method = serie.id ? 'PUT' : 'POST'
     const params = {
       method: method,
@@ -50,12 +42,10 @@ class BoxSeries extends Component {
         })
       }
       if(retorno.status === 200){
-        console.log(serie)
         this.setState({
           series: this.state.series.map(s => s.id == serie.id ? serie : s ),
           serie: this.novaSerie
         })
-        console.log(this.state.series)
       }
       
     } catch (erro) {
@@ -66,45 +56,32 @@ class BoxSeries extends Component {
 
   deleta = async (id) => {
     const seriesAtual = this.state.series
-    const params = {
-      method: 'DELETE',
-    }
-    const retorno = await
-      fetch('http://localhost:3000/series/' + id, params)
-    if (retorno.status === 204) {
-      this.setState({
+		const params = {
+			method: 'DELETE',
+		}
+		const retorno = await 
+			fetch('http://localhost:3000/series/' + id,params)
+		if(retorno.status === 204){
+			this.setState({
         series: seriesAtual.filter((serie) => {
           return serie.id !== id
         })
       })
-    }
-  }
-
-  inputHandler = (name, value) => {
-    this.setState({ serie: { ...this.state.serie, [name]: value } })
-  }
-
-  consulta = (serie) => {
-    this.setState({ serie: serie })
-    console.log(this.state.serie)
-  }
+		}
+	}
 
   render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-4">
-            <FormularioSeries
-              serie={this.state.serie}
-              enviaDados={this.enviaDados}
-              inputHandler={this.inputHandler} />
+            <FormularioSeries enviaDados={this.enviaDados} />
           </div>
           <div className="col-md-8">
-            <TabelaSeries
-              series={this.state.series}
-              consulta={this.consulta}
+            <TabelaSeries 
+              series={this.state.series} 
               deleta={this.deleta}
-            />
+              />
           </div>
         </div>
       </div>
