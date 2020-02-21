@@ -4,6 +4,13 @@ import { signOut } from '../services/auth-service'
 
 export default class Navbar extends Component {
 
+	constructor(){
+		super()
+		this.state = {
+			signOut: false
+		}
+	}
+
 	render() {
 		if(this.state.signOut){
 			return <Redirect to='/login'/>
